@@ -5,6 +5,10 @@ import { ObjectId } from "mongodb"
 export async function GET(request: NextRequest) {
   try {
     const lecturerId = request.nextUrl.searchParams.get("lecturerId")
+
+    if (!lecturerId) {
+      return NextResponse.json({ error: "Lecturer ID is required" }, { status: 400 })
+    }
     const status = request.nextUrl.searchParams.get("status") || "pending"
 
     const submissionsCollection = await getSubmissionsCollection()

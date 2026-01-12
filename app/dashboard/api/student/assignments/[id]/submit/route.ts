@@ -3,9 +3,14 @@ import { getSubmissionsCollection, getAssignmentsCollection } from "@/lib/db"
 import { put } from "@vercel/blob"
 import { ObjectId } from "mongodb"
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   try {
     const studentId = request.nextUrl.searchParams.get("studentId")
+
+    if (!studentId) {
+      return NextResponse.json({ error: "Student ID is required" }, { status: 400 })
+    }
     const formData = await request.formData()
     const files = formData.getAll("files") as File[]
 
@@ -16,7 +21,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const submissionsCollection = await getSubmissionsCollection()
     const assignmentsCollection = await getAssignmentsCollection()
 
-    const assignment = await assignmentsCollection.findOne({ _id: new ObjectId(params.id) })
+    const assignment = await assignmentsCollection.findOne({ _id: new ObjectId(id) })
 
     if (!assignment) {
       return NextResponse.json({ error: "Assignment not found" }, { status: 404 })
@@ -24,7 +29,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     // Check if student already submitted
     const existingSubmission = await submissionsCollection.findOne({
-      assignment_id: new ObjectId(params.id),
+      assignment_id: new ObjectId(id),
       student_id: new ObjectId(studentId),
     })
 
@@ -52,12 +57,12 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     // Upload files to Vercel Blob
     const fileUrls: string[] = []
-    const uploadPath = `assignments/${params.id}/${studentId}`
+    const uploadPath = `assignments/${id}/${studentId}`
 
     for (const file of files) {
       try {
         const blob = await put(`${uploadPath}/${file.name}`, file, {
-          access: "private",
+          access: "public",
         })
         fileUrls.push(blob.url)
       } catch (uploadErr) {
@@ -68,7 +73,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     // Create submission record
     const submission = {
-      assignment_id: new ObjectId(params.id),
+      assignment_id: new ObjectId(id),
       student_id: new ObjectId(studentId),
       file_urls: fileUrls,
       submitted_at: now,

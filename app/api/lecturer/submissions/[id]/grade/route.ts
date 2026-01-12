@@ -2,10 +2,15 @@ import { type NextRequest, NextResponse } from "next/server"
 import { getSubmissionsCollection, getGradesCollection, getAssignmentsCollection } from "@/lib/db"
 import { ObjectId } from "mongodb"
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   try {
     const { score, feedback } = await request.json()
     const lecturerId = request.nextUrl.searchParams.get("lecturerId")
+
+    if (!lecturerId) {
+      return NextResponse.json({ error: "Lecturer ID is required" }, { status: 400 })
+    }
 
     if (score < 0 || score > 100) {
       return NextResponse.json({ error: "Score must be between 0 and 100" }, { status: 400 })
@@ -17,7 +22,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     // Get submission
     const submission = await submissionsCollection.findOne({
-      _id: new ObjectId(params.id),
+      _id: new ObjectId(id),
     })
 
     if (!submission) {
@@ -44,7 +49,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
 
     // Create grade record
     const grade = {
-      submission_id: new ObjectId(params.id),
+      submission_id: new ObjectId(id),
       assignment_id: submission.assignment_id,
       student_id: submission.student_id,
       score,
@@ -58,7 +63,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     await gradesCollection.insertOne(grade)
 
     // Update submission status
-    await submissionsCollection.updateOne({ _id: new ObjectId(params.id) }, { $set: { status: "graded" } })
+    await submissionsCollection.updateOne({ _id: new ObjectId(id) }, { $set: { status: "graded" } })
 
     return NextResponse.json({ success: true, grade })
   } catch (error) {

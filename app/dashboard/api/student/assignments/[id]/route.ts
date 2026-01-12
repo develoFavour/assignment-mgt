@@ -8,9 +8,14 @@ import {
 } from "@/lib/db"
 import { ObjectId } from "mongodb"
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   try {
     const studentId = request.nextUrl.searchParams.get("studentId")
+
+    if (!studentId) {
+      return NextResponse.json({ error: "Student ID is required" }, { status: 400 })
+    }
 
     const assignmentsCollection = await getAssignmentsCollection()
     const submissionsCollection = await getSubmissionsCollection()
@@ -18,19 +23,19 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const coursesCollection = await getCoursesCollection()
     const usersCollection = await getUsersCollection()
 
-    const assignment = await assignmentsCollection.findOne({ _id: new ObjectId(params.id) })
+    const assignment = await assignmentsCollection.findOne({ _id: new ObjectId(id) })
 
     if (!assignment) {
       return NextResponse.json({ error: "Assignment not found" }, { status: 404 })
     }
 
     const submission = await submissionsCollection.findOne({
-      assignment_id: new ObjectId(params.id),
+      assignment_id: new ObjectId(id),
       student_id: new ObjectId(studentId),
     })
 
     const grade = await gradesCollection.findOne({
-      assignment_id: new ObjectId(params.id),
+      assignment_id: new ObjectId(id),
       student_id: new ObjectId(studentId),
     })
 

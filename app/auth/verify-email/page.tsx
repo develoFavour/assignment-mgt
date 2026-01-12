@@ -1,57 +1,55 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { AuthLayout } from "@/components/layout/auth-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { AlertCircle, CheckCircle } from "lucide-react";
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
-	const [status, setStatus] = useState<"loading" | "success" | "error">(
-		"loading"
-	);
-	const [message, setMessage] = useState("");
+	const token = searchParams.get("token");
+	const error = searchParams.get("error");
+	const success = searchParams.get("success");
+
+	let status: "loading" | "success" | "error" = "loading";
+	let message = "";
+
+	if (success) {
+		status = "success";
+		message = "Email verified successfully.";
+	} else if (error) {
+		status = "error";
+		switch (error) {
+			case "invalid-token":
+				message =
+					"Invalid verification link. Please contact your administrator.";
+				break;
+			case "token-expired":
+				message =
+					"Verification link has expired. Please contact your administrator for a new one.";
+				break;
+			case "verification-failed":
+				message =
+					"Verification failed. Please try again or contact your administrator.";
+				break;
+			default:
+				message = "An error occurred during verification.";
+		}
+	} else if (!token) {
+		status = "error";
+		message = "No verification token provided.";
+	} else {
+		// Redirect to the verification API
+	}
 
 	useEffect(() => {
-		const token = searchParams.get("token");
-		const error = searchParams.get("error");
-
-		if (error) {
-			setStatus("error");
-			switch (error) {
-				case "invalid-token":
-					setMessage(
-						"Invalid verification link. Please contact your administrator."
-					);
-					break;
-				case "token-expired":
-					setMessage(
-						"Verification link has expired. Please contact your administrator for a new one."
-					);
-					break;
-				case "verification-failed":
-					setMessage(
-						"Verification failed. Please try again or contact your administrator."
-					);
-					break;
-				default:
-					setMessage("An error occurred during verification.");
-			}
-			return;
+		if (token && !error && !success) {
+			window.location.href = `/api/auth/verify-email?token=${token}`;
 		}
-
-		if (!token) {
-			setStatus("error");
-			setMessage("No verification token provided.");
-			return;
-		}
-
-		// Redirect to the verification API
-		window.location.href = `/api/auth/verify-email?token=${token}`;
-	}, [searchParams]);
+	}, [token, error, success]);
 
 	if (status === "loading") {
 		return (
@@ -100,5 +98,25 @@ export default function VerifyEmailPage() {
 				</CardContent>
 			</Card>
 		</AuthLayout>
+	);
+}
+
+export default function VerifyEmailPage() {
+	return (
+		<Suspense
+			fallback={
+				<AuthLayout>
+					<Card>
+						<CardContent className="pt-6">
+							<div className="flex flex-col items-center justify-center py-12">
+								<LoadingSpinner text="Loading..." />
+							</div>
+						</CardContent>
+					</Card>
+				</AuthLayout>
+			}
+		>
+			<VerifyEmailContent />
+		</Suspense>
 	);
 }

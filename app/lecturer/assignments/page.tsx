@@ -42,7 +42,7 @@ export default function AssignmentsPage() {
 
 	useEffect(() => {
 		const fetchData = async () => {
-			if (!session?.role === "lecturer") return;
+			if (session?.role !== "lecturer") return;
 			try {
 				const [assignmentsRes, coursesRes] = await Promise.all([
 					fetch(`/api/lecturer/assignments?lecturerId=${session.userId}`),
@@ -73,7 +73,7 @@ export default function AssignmentsPage() {
 		e.preventDefault();
 		try {
 			const res = await fetch(
-				`/api/lecturer/assignments?lecturerId=${session.userId}`,
+				`/api/lecturer/assignments?lecturerId=${session?.userId}`,
 				{
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
@@ -96,7 +96,9 @@ export default function AssignmentsPage() {
 					cutoff_days: 7,
 					penalty_percent: 10,
 				});
-				toast.success("Assignment created successfully, all students will be notified");
+				toast.success(
+					"Assignment created successfully, all students will be notified"
+				);
 				setShowAddForm(false);
 			}
 		} catch (err) {
@@ -127,8 +129,9 @@ export default function AssignmentsPage() {
 			<Header />
 			<Sidebar />
 			<main
-				className={`transition-all duration-200 ${sidebarOpen ? "lg:ml-64" : ""
-					}`}
+				className={`transition-all duration-200 ${
+					sidebarOpen ? "lg:ml-64" : ""
+				}`}
 			>
 				<div className="p-6 space-y-6 mt-12">
 					<div className="flex items-center justify-between">
@@ -145,7 +148,7 @@ export default function AssignmentsPage() {
 								onClick={() => {
 									setLoading(true);
 									const fetchData = async () => {
-										if (!session?.role === "lecturer") return;
+										if (session?.role !== "lecturer") return;
 										try {
 											const [assignmentsRes, coursesRes] = await Promise.all([
 												fetch(
@@ -196,8 +199,8 @@ export default function AssignmentsPage() {
 								{courses.length === 0 ? (
 									<div className="text-center py-8">
 										<p className="text-muted-foreground">
-											You don't have any courses assigned to you yet. Contact
-											the administrator to get courses assigned.
+											You don&apos;t have any courses assigned to you yet.
+											Contact the administrator to get courses assigned.
 										</p>
 									</div>
 								) : (
@@ -344,8 +347,8 @@ export default function AssignmentsPage() {
 										<div>
 											<p>No assignments yet</p>
 											<p className="text-sm mt-2">
-												You don't have any courses assigned to you yet. Contact
-												the administrator to get courses assigned.
+												You don&apos;t have any courses assigned to you yet.
+												Contact the administrator to get courses assigned.
 											</p>
 										</div>
 									) : (

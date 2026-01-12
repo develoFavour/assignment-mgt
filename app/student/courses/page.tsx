@@ -55,7 +55,7 @@ export default function CoursesPage() {
 			try {
 				// Fetch enrolled courses
 				const coursesRes = await fetch(
-					`/api/student/courses?studentId=${session.userId}`
+					`/api/student/courses?studentId=${session?.userId}`
 				);
 				if (coursesRes.ok) {
 					setCourses(await coursesRes.json());
@@ -104,7 +104,7 @@ export default function CoursesPage() {
 
 		try {
 			const res = await fetch(
-				`/api/onboarding/enroll?studentId=${session.userId}`,
+				`/api/onboarding/enroll?studentId=${session?.userId}`,
 				{
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
@@ -117,7 +117,7 @@ export default function CoursesPage() {
 			if (res.ok) {
 				// Refresh enrolled courses
 				const coursesRes = await fetch(
-					`/api/student/courses?studentId=${session.userId}`
+					`/api/student/courses?studentId=${session?.userId}`
 				);
 				if (coursesRes.ok) {
 					setCourses(await coursesRes.json());
@@ -149,7 +149,7 @@ export default function CoursesPage() {
 			if (res.ok) {
 				// Refresh courses to show the newly enrolled course
 				const coursesRes = await fetch(
-					`/api/student/courses?studentId=${session.userId}`
+					`/api/student/courses?studentId=${session?.userId}`
 				);
 				if (coursesRes.ok) {
 					setCourses(await coursesRes.json());
@@ -371,8 +371,8 @@ export default function CoursesPage() {
 									</div>
 								) : courses.length === 0 ? (
 									<div className="text-center text-muted-foreground py-8 col-span-full">
-										No courses enrolled. Click "Course Registration" to get
-										started.
+										No courses enrolled. Click &apos;Course Registration&apos;
+										to get started.
 									</div>
 								) : (
 									courses.map((course) => (

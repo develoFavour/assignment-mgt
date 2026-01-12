@@ -2,7 +2,7 @@ import { put, del } from "@vercel/blob";
 
 export async function uploadFile(file: File, path: string): Promise<string> {
 	const blob = await put(`${path}/${file.name}`, file, {
-		access: "private",
+		access: "public",
 	});
 	return blob.url;
 }
