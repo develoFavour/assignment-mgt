@@ -12,6 +12,7 @@ import { LoadingSpinner } from "@/components/loading-spinner";
 import { Lock, User, ArrowRight, ShieldCheck, Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import Link from "next/link";
 
 export default function LoginPage() {
 	const router = useRouter();
@@ -178,7 +179,9 @@ export default function LoginPage() {
 						</Button>
 
 						<p className="text-xs text-muted-foreground font-medium leading-relaxed max-w-[180px]">
-							New to the portal? Check your university mail for setup.
+							<Link href="/">
+								Go Home
+							</Link>
 						</p>
 					</div>
 				</form>

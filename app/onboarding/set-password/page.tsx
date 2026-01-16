@@ -8,11 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FormError } from "@/components/form-error";
 import { LoadingSpinner } from "@/components/loading-spinner";
+import { useAuthStore } from "@/lib/store";
 import { Lock, CheckCircle2, ShieldCheck, ArrowRight, ShieldAlert, Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function SetPasswordPage() {
 	const router = useRouter();
+	const { setSession } = useAuthStore();
 	const [password, setPassword] = useState("");
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [error, setError] = useState("");
@@ -54,6 +56,7 @@ export default function SetPasswordPage() {
 			}
 
 			if (data.user) {
+				setSession(data.user);
 				sessionStorage.setItem("user", JSON.stringify(data.user));
 				if (data.user.role === "student") {
 					router.push("/onboarding/select-courses");

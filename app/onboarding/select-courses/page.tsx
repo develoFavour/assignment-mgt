@@ -34,8 +34,16 @@ export default function SelectCoursesPage() {
   const [levelFilter, setLevelFilter] = useState<number | "all">("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
 
+  // Handle session check separately
+  useEffect(() => {
+    if (!loading && !session) {
+      router.push("/login");
+    }
+  }, [session, router, loading]);
+
   useEffect(() => {
     const fetchData = async () => {
+      if (!session) return;
       try {
         const levelParam = (session as any)?.level || "";
         const res = await fetch(`/api/onboarding/courses${levelParam ? `?level=${levelParam}` : ""}`);
@@ -48,7 +56,6 @@ export default function SelectCoursesPage() {
 
         setAllCourses(data.courses || []);
         setStudentLevel(data.studentLevel);
-        // Set initial filter to student's level if available
         if (data.studentLevel) setLevelFilter(data.studentLevel);
       } catch (err) {
         setError("An error occurred while loading courses");

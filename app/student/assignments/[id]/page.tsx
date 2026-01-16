@@ -58,7 +58,7 @@ export default function AssignmentDetailPage() {
   const [assignment, setAssignment] = useState<AssignmentDetail | null>(null);
   const [submission, setSubmission] = useState<Submission | null>(null);
   const [grade, setGrade] = useState<Grade | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const { session } = useAuthStore();
   const assignmentId = params.id as string;
