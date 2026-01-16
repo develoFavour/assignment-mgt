@@ -162,20 +162,20 @@ export default function AdminDashboard() {
 								key={stat.label}
 								className="border-none rounded-[32px] shadow-sm bg-white overflow-hidden group hover:shadow-xl hover:shadow-primary/5 transition-all duration-500"
 							>
-								<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-8">
+								<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1 p-5">
 									<CardTitle className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
 										{stat.label}
 									</CardTitle>
 									<div
 										className={cn(
-											"p-2.5 rounded-2xl transition-all duration-500 group-hover:scale-110",
+											"p-2 rounded-2xl transition-all duration-500 group-hover:scale-110",
 											stat.bg
 										)}
 									>
-										<Icon className={cn("h-5 w-5", stat.color)} />
+										<Icon className={cn("h-4 w-4", stat.color)} />
 									</div>
 								</CardHeader>
-								<CardContent className="px-8 pb-8">
+								<CardContent className="px-5 pb-5">
 									<div className="text-4xl font-black tracking-tighter text-slate-900">
 										{stat.value}
 									</div>

@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FormError } from "@/components/form-error";
 import { LoadingSpinner } from "@/components/loading-spinner";
-import { Lock, User, ArrowRight, ShieldCheck } from "lucide-react";
+import { Lock, User, ArrowRight, ShieldCheck, Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -20,6 +20,7 @@ export default function LoginPage() {
 	const [password, setPassword] = useState("");
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -130,18 +131,29 @@ export default function LoginPage() {
 									Recovery?
 								</button>
 							</div>
-							<div className="relative">
-								<Lock className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
+							<div className="relative group/pass">
+								<Lock className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/40 group-focus-within/pass:text-primary transition-colors" />
 								<Input
 									id="password"
-									type="password"
+									type={showPassword ? "text" : "password"}
 									placeholder="••••••••"
-									className="bg-transparent border-0 border-b border-border rounded-none px-7 py-6 h-auto text-lg focus-visible:ring-0 focus-visible:border-primary transition-all placeholder:text-muted-foreground/30 font-medium"
+									className="bg-transparent border-0 border-b border-border rounded-none px-7 py-6 h-auto text-lg focus-visible:ring-0 focus-visible:border-primary transition-all placeholder:text-muted-foreground/30 font-medium w-full"
 									value={password}
 									onChange={(e) => setPassword(e.target.value)}
 									disabled={loading}
 									required
 								/>
+								<button
+									type="button"
+									onClick={() => setShowPassword(!showPassword)}
+									className="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground/40 hover:text-primary transition-colors pr-1"
+								>
+									{showPassword ? (
+										<EyeOff className="h-5 w-5" />
+									) : (
+										<Eye className="h-5 w-5" />
+									)}
+								</button>
 							</div>
 						</div>
 					</div>

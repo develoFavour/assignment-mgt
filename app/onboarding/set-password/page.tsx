@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FormError } from "@/components/form-error";
 import { LoadingSpinner } from "@/components/loading-spinner";
-import { Lock, CheckCircle2, ShieldCheck, ArrowRight, ShieldAlert } from "lucide-react";
+import { Lock, CheckCircle2, ShieldCheck, ArrowRight, ShieldAlert, Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function SetPasswordPage() {
@@ -17,6 +17,8 @@ export default function SetPasswordPage() {
 	const [confirmPassword, setConfirmPassword] = useState("");
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [showPassword, setShowPassword] = useState(false);
+	const [showConfirm, setShowConfirm] = useState(false);
 
 	const validatePassword = () => {
 		if (password.length < 8) {
@@ -107,17 +109,28 @@ export default function SetPasswordPage() {
 							>
 								New Password
 							</label>
-							<div className="relative">
-								<Lock className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
+							<div className="relative group/pass">
+								<Lock className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/40 group-focus-within/pass:text-primary transition-colors" />
 								<Input
 									id="password"
-									type="password"
+									type={showPassword ? "text" : "password"}
 									placeholder="At least 8 characters"
-									className="bg-transparent border-0 border-b border-border rounded-none px-7 py-6 h-auto text-lg focus-visible:ring-0 focus-visible:border-primary transition-all placeholder:text-muted-foreground/30 font-medium"
+									className="bg-transparent border-0 border-b border-border rounded-none px-7 py-6 h-auto text-lg focus-visible:ring-0 focus-visible:border-primary transition-all placeholder:text-muted-foreground/30 font-medium w-full"
 									value={password}
 									onChange={(e) => setPassword(e.target.value)}
 									required
 								/>
+								<button
+									type="button"
+									onClick={() => setShowPassword(!showPassword)}
+									className="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground/40 hover:text-primary transition-colors pr-1"
+								>
+									{showPassword ? (
+										<EyeOff className="h-5 w-5" />
+									) : (
+										<Eye className="h-5 w-5" />
+									)}
+								</button>
 							</div>
 						</div>
 
@@ -129,17 +142,28 @@ export default function SetPasswordPage() {
 							>
 								Confirm Password
 							</label>
-							<div className="relative">
-								<ShieldAlert className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/40 group-focus-within:text-primary transition-colors" />
+							<div className="relative group/confirm">
+								<ShieldAlert className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/40 group-focus-within/confirm:text-primary transition-colors" />
 								<Input
 									id="confirm"
-									type="password"
+									type={showConfirm ? "text" : "password"}
 									placeholder="Must match exactly"
-									className="bg-transparent border-0 border-b border-border rounded-none px-7 py-6 h-auto text-lg focus-visible:ring-0 focus-visible:border-primary transition-all placeholder:text-muted-foreground/30 font-medium"
+									className="bg-transparent border-0 border-b border-border rounded-none px-7 py-6 h-auto text-lg focus-visible:ring-0 focus-visible:border-primary transition-all placeholder:text-muted-foreground/30 font-medium w-full"
 									value={confirmPassword}
 									onChange={(e) => setConfirmPassword(e.target.value)}
 									required
 								/>
+								<button
+									type="button"
+									onClick={() => setShowConfirm(!showConfirm)}
+									className="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground/40 hover:text-primary transition-colors pr-1"
+								>
+									{showConfirm ? (
+										<EyeOff className="h-5 w-5" />
+									) : (
+										<Eye className="h-5 w-5" />
+									)}
+								</button>
 							</div>
 						</div>
 					</div>

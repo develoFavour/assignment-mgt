@@ -3,8 +3,8 @@
 import { ReactNode, useEffect } from "react";
 import { Header } from "./header";
 import { Sidebar } from "./sidebar";
-import { useUIStore } from "@/lib/store";
-import { usePathname } from "next/navigation";
+import { useUIStore, useAuthStore } from "@/lib/store";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 interface NavigationItem {
@@ -20,7 +20,16 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children, navigationItems }: DashboardLayoutProps) {
     const { sidebarOpen, setSidebarOpen } = useUIStore();
+    const { session } = useAuthStore();
     const pathname = usePathname();
+    const router = useRouter();
+
+    // Session check and redirect (Handles production auth lag)
+    useEffect(() => {
+        if (!session) {
+            router.push("/login");
+        }
+    }, [session, router]);
 
     // Close sidebar on navigation (mobile)
     useEffect(() => {
