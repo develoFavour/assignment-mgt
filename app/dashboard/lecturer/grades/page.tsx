@@ -11,6 +11,15 @@ import { useUIStore } from "@/lib/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { LayoutDashboard, FileText, ClipboardCheck, BookOpen } from "lucide-react"
+
+const lecturerNavigationItems = [
+  { href: "/lecturer", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/lecturer/assignments", label: "Assignments", icon: FileText },
+  { href: "/lecturer/grades", label: "Grades", icon: ClipboardCheck },
+  { href: "/lecturer/materials", label: "Course Materials", icon: BookOpen },
+]
+
 
 export default function GradesPage() {
   const router = useRouter()
@@ -79,7 +88,7 @@ export default function GradesPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <Sidebar />
+      <Sidebar navigationItems={lecturerNavigationItems} />
       <main className={`transition-all duration-200 ${sidebarOpen ? "lg:ml-64" : ""}`}>
         <div className="p-6 space-y-6">
           <div>
@@ -95,9 +104,8 @@ export default function GradesPage() {
                   setFilter(status)
                   setLoading(true)
                 }}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  filter === status ? "bg-primary text-primary-foreground" : "border border-border hover:bg-muted"
-                }`}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${filter === status ? "bg-primary text-primary-foreground" : "border border-border hover:bg-muted"
+                  }`}
               >
                 {status.charAt(0).toUpperCase() + status.slice(1)}
               </button>
@@ -121,9 +129,8 @@ export default function GradesPage() {
                         <button
                           key={submission._id}
                           onClick={() => setSelectedSubmission(submission)}
-                          className={`w-full p-4 border rounded-lg text-left hover:bg-muted transition-colors ${
-                            selectedSubmission?._id === submission._id ? "border-primary bg-primary/5" : "border-border"
-                          }`}
+                          className={`w-full p-4 border rounded-lg text-left hover:bg-muted transition-colors ${selectedSubmission?._id === submission._id ? "border-primary bg-primary/5" : "border-border"
+                            }`}
                         >
                           <div className="font-medium text-foreground">{submission.student_name}</div>
                           <div className="text-sm text-muted-foreground">{submission.assignment_title}</div>

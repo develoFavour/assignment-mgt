@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { getAssignmentsCollection, getCoursesCollection, getStudentEnrollmentsCollection, getUsersCollection } from "@/lib/db";
 import { ObjectId } from "mongodb";
 import { emailService } from "@/lib/email";
+import { logEvent } from "@/lib/logger";
 
 export async function GET(request: NextRequest) {
   try {
@@ -50,6 +51,7 @@ export async function POST(request: NextRequest) {
       title,
       description,
       deadline,
+      total_marks,
       accept_late,
       cutoff_days,
       penalty_percent,
@@ -71,6 +73,7 @@ export async function POST(request: NextRequest) {
       title,
       description,
       deadline: new Date(deadline),
+      total_marks: total_marks || 100,
       created_by: new ObjectId(lecturerId),
       late_submission: {
         accept_late,
@@ -107,6 +110,13 @@ export async function POST(request: NextRequest) {
       ).catch(err => console.error("Email dispatch failed:", err));
     }
     // ---------------------------------
+
+    // Log the event
+    await logEvent({
+      action: `New Assignment: "${title}" created for ${courseName}`,
+      user: "lecturer",
+      level: "success",
+    });
 
     return NextResponse.json({
       assignment: { _id: result.insertedId, ...assignment },

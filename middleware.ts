@@ -88,7 +88,7 @@ export function middleware(request: NextRequest) {
 		}
 	}
 
-	const publicRoutes = ["/login"];
+	const publicRoutes = ["/login", "/"];
 	const isPublic = publicRoutes.some(
 		(route) => request.nextUrl.pathname === route
 	);
@@ -101,7 +101,7 @@ export function middleware(request: NextRequest) {
 				// User already logged in, redirect to their dashboard
 				return NextResponse.redirect(new URL(`/${session.role}`, request.url));
 			} catch (err) {
-				// Invalid session, let them stay on login
+				// Invalid session, let them stay on the public page
 			}
 		}
 	}

@@ -6,15 +6,22 @@ import { LogOut, Menu, Bell, Search, User } from "lucide-react";
 import { useUIStore } from "@/lib/store";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export function Header() {
 	const { session, logout } = useAuthStore();
 	const { setSidebarOpen, sidebarOpen } = useUIStore();
+	const router = useRouter();
 
+	const handleLogout = () => {
+		logout();
+		toast.success("Logout successful");
+		router.push("/login");
+	};
 	return (
 		<header className={cn(
-			"fixed top-0 right-0 h-16 border-b border-border bg-card/80 backdrop-blur-md z-30 transition-all duration-300",
-			sidebarOpen ? "left-0 lg:left-64" : "left-0"
+			"fixed top-0 right-0 h-16 border-b border-border bg-card/80 backdrop-blur-md z-30 transition-all duration-300 left-0 lg:left-64"
 		)}>
 			<div className="flex h-full items-center justify-between px-6">
 				<div className="flex items-center gap-4">
@@ -46,7 +53,7 @@ export function Header() {
 						<div className="flex items-center gap-3">
 							<div className="hidden sm:flex flex-col items-end text-xs">
 								<span className="font-bold text-foreground">
-									Student Portal
+									{session.role === "admin" ? "Admin Portal" : session.role === "lecturer" ? "Lecturer Portal" : "Student Portal"}
 								</span>
 								<span className="text-muted-foreground capitalize">
 									{session.role} Account
@@ -60,7 +67,7 @@ export function Header() {
 							<Button
 								variant="ghost"
 								size="icon"
-								onClick={logout}
+								onClick={handleLogout}
 								className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-all"
 								title="Logout"
 							>

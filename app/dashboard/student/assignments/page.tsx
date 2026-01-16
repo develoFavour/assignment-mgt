@@ -8,7 +8,15 @@ import { useAuthStore } from "@/lib/store"
 import { useUIStore } from "@/lib/store"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Clock, CheckCircle, AlertCircle } from "lucide-react"
+import { Clock, CheckCircle, AlertCircle, LayoutDashboard, BookOpen, Book, FileText } from "lucide-react"
+
+const studentNavigationItems = [
+  { href: "/student", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/student/courses", label: "My Courses", icon: BookOpen },
+  { href: "/student/materials", label: "Course Materials", icon: Book },
+  { href: "/student/assignments", label: "Assignments", icon: FileText },
+]
+
 
 interface AssignmentWithStatus {
   _id: string
@@ -123,7 +131,7 @@ export default function AssignmentsPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <Sidebar />
+      <Sidebar navigationItems={studentNavigationItems} />
       <main className={`transition-all duration-200 ${sidebarOpen ? "lg:ml-64" : ""}`}>
         <div className="p-6 space-y-6">
           <div>
@@ -139,9 +147,8 @@ export default function AssignmentsPage() {
                   setFilter(status)
                   setLoading(true)
                 }}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  filter === status ? "bg-primary text-primary-foreground" : "border border-border hover:bg-muted"
-                }`}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${filter === status ? "bg-primary text-primary-foreground" : "border border-border hover:bg-muted"
+                  }`}
               >
                 {status.charAt(0).toUpperCase() + status.slice(1)}
               </button>

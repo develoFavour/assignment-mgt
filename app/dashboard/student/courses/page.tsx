@@ -7,7 +7,15 @@ import { Sidebar } from "@/components/layout/sidebar"
 import { useAuthStore } from "@/lib/store"
 import { useUIStore } from "@/lib/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users } from "lucide-react"
+import { Users, LayoutDashboard, BookOpen, Book, FileText } from "lucide-react"
+
+const studentNavigationItems = [
+  { href: "/student", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/student/courses", label: "My Courses", icon: BookOpen },
+  { href: "/student/materials", label: "Course Materials", icon: Book },
+  { href: "/student/assignments", label: "Assignments", icon: FileText },
+]
+
 
 interface CourseWithLecturer {
   _id: string
@@ -59,7 +67,7 @@ export default function CoursesPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <Sidebar />
+      <Sidebar navigationItems={studentNavigationItems} />
       <main className={`transition-all duration-200 ${sidebarOpen ? "lg:ml-64" : ""}`}>
         <div className="p-6 space-y-6">
           <div>
@@ -88,9 +96,6 @@ export default function CoursesPage() {
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Users className="h-4 w-4" />
                         <span>{course.lecturer_name}</span>
-                      </div>
-                      <div className="text-sm">
-                        <div className="text-muted-foreground">{course.assignments_count} active assignment(s)</div>
                       </div>
                     </CardContent>
                   </Card>

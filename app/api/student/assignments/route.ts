@@ -64,6 +64,7 @@ export async function GET(request: NextRequest) {
 					is_submitted: !!submission,
 					is_graded: !!grade,
 					grade: grade?.final_score,
+					total_score: assignment.total_score,
 					is_late: submission?.is_late,
 					hours_late: submission?.hours_late,
 				};

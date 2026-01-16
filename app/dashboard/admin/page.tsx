@@ -7,7 +7,14 @@ import { Sidebar } from "@/components/layout/sidebar"
 import { useAuthStore } from "@/lib/store"
 import { useUIStore } from "@/lib/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, BookOpen, FileText } from "lucide-react"
+import { Users, BookOpen, FileText, LayoutDashboard } from "lucide-react"
+
+const adminNavigationItems = [
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/users", label: "Users", icon: Users },
+  { href: "/admin/courses", label: "Courses", icon: BookOpen },
+]
+
 
 export default function AdminDashboard() {
   const router = useRouter()
@@ -35,7 +42,7 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <Sidebar />
+      <Sidebar navigationItems={adminNavigationItems} />
       <main className={`transition-all duration-200 ${sidebarOpen ? "lg:ml-64" : ""}`}>
         <div className="p-6 space-y-6">
           <div>

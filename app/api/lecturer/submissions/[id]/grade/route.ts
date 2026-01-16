@@ -1,6 +1,8 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getSubmissionsCollection, getGradesCollection, getAssignmentsCollection } from "@/lib/db"
+import { getSubmissionsCollection, getGradesCollection, getAssignmentsCollection, getUsersCollection, getCoursesCollection } from "@/lib/db"
 import { ObjectId } from "mongodb"
+import { emailService } from "@/lib/email"
+import { logEvent } from "@/lib/logger"
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -12,13 +14,11 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       return NextResponse.json({ error: "Lecturer ID is required" }, { status: 400 })
     }
 
-    if (score < 0 || score > 100) {
-      return NextResponse.json({ error: "Score must be between 0 and 100" }, { status: 400 })
-    }
-
     const submissionsCollection = await getSubmissionsCollection()
     const gradesCollection = await getGradesCollection()
     const assignmentsCollection = await getAssignmentsCollection()
+    const usersCollection = await getUsersCollection()
+    const coursesCollection = await getCoursesCollection()
 
     // Get submission
     const submission = await submissionsCollection.findOne({
@@ -29,10 +29,21 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       return NextResponse.json({ error: "Submission not found" }, { status: 404 })
     }
 
-    // Get assignment for late submission penalty settings
+    // Get assignment for late submission penalty settings and total marks
     const assignment = await assignmentsCollection.findOne({
       _id: submission.assignment_id,
     })
+
+    if (!assignment) {
+      return NextResponse.json({ error: "Assignment not found" }, { status: 404 })
+    }
+
+    const totalMarks = assignment.total_marks || 100
+
+    // Validate score against total marks
+    if (score < 0 || score > totalMarks) {
+      return NextResponse.json({ error: `Score must be between 0 and ${totalMarks}` }, { status: 400 })
+    }
 
     // Calculate final score with penalty if late
     let finalScore = score
@@ -65,7 +76,34 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     // Update submission status
     await submissionsCollection.updateOne({ _id: new ObjectId(id) }, { $set: { status: "graded" } })
 
-    return NextResponse.json({ success: true, grade })
+    // Send email notification to student
+    try {
+      const student = await usersCollection.findOne({ _id: new ObjectId(submission.student_id) })
+      const course = await coursesCollection.findOne({ _id: new ObjectId(assignment.course_id) })
+
+      if (student?.email && course) {
+        await emailService.sendGradeNotificationEmail(
+          student.email,
+          assignment.title,
+          `${course.course_code} - ${course.course_name}`,
+          finalScore,
+          totalMarks,
+          feedback
+        )
+      }
+    } catch (emailError) {
+      console.error("[grade] Failed to send email notification:", emailError)
+      // Don't fail the grading if email fails
+    }
+
+    // Log the grading event
+    await logEvent({
+      action: `Submission Graded: ${assignment.title} (Score: ${finalScore}/${totalMarks})`,
+      user: "lecturer",
+      level: "info",
+    });
+
+    return NextResponse.json({ success: true, grade, total_marks: totalMarks })
   } catch (error) {
     console.error("[v0] Grade submission error:", error)
     return NextResponse.json({ error: "Failed to grade submission" }, { status: 500 })

@@ -10,8 +10,17 @@ import { useUIStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, LayoutDashboard, FileText, ClipboardCheck, BookOpen } from "lucide-react";
 import type { Assignment } from "@/lib/types";
+import { toast } from "sonner";
+import { ConfirmationModal } from "@/components/modals/confirmation-modal";
+
+const lecturerNavigationItems = [
+	{ href: "/lecturer", label: "Dashboard", icon: LayoutDashboard },
+	{ href: "/lecturer/assignments", label: "Assignments", icon: FileText },
+	{ href: "/lecturer/grades", label: "Grades", icon: ClipboardCheck },
+	{ href: "/lecturer/materials", label: "Course Materials", icon: BookOpen },
+];
 
 export default function AssignmentsPage() {
 	const router = useRouter();
@@ -30,6 +39,9 @@ export default function AssignmentsPage() {
 		cutoff_days: 7,
 		penalty_percent: 10,
 	});
+	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+	const [assignmentToDelete, setAssignmentToDelete] = useState<string | null>(null);
+	const [isDeleting, setIsDeleting] = useState(false);
 
 	useEffect(() => {
 		if (!session) {
@@ -95,16 +107,27 @@ export default function AssignmentsPage() {
 		}
 	};
 
-	const handleDelete = async (assignmentId: string) => {
-		if (confirm("Are you sure you want to delete this assignment?")) {
-			try {
-				await fetch(`/api/lecturer/assignments/${assignmentId}`, {
-					method: "DELETE",
-				});
-				setAssignments(assignments.filter((a) => a._id !== assignmentId));
-			} catch (err) {
-				console.error("Failed to delete assignment:", err);
-			}
+	const handleDelete = (assignmentId: string) => {
+		setAssignmentToDelete(assignmentId);
+		setDeleteModalOpen(true);
+	};
+
+	const confirmDelete = async () => {
+		if (!assignmentToDelete) return;
+		setIsDeleting(true);
+		try {
+			await fetch(`/api/lecturer/assignments/${assignmentToDelete}`, {
+				method: "DELETE",
+			});
+			setAssignments(assignments.filter((a) => a._id !== assignmentToDelete));
+			toast.success("Assignment deleted successfully");
+		} catch (err) {
+			console.error("Failed to delete assignment:", err);
+			toast.error("Failed to delete assignment");
+		} finally {
+			setIsDeleting(false);
+			setDeleteModalOpen(false);
+			setAssignmentToDelete(null);
 		}
 	};
 
@@ -115,11 +138,10 @@ export default function AssignmentsPage() {
 	return (
 		<div className="min-h-screen bg-background">
 			<Header />
-			<Sidebar />
+			<Sidebar navigationItems={lecturerNavigationItems} />
 			<main
-				className={`transition-all duration-200 ${
-					sidebarOpen ? "lg:ml-64" : ""
-				}`}
+				className={`transition-all duration-200 ${sidebarOpen ? "lg:ml-64" : ""
+					}`}
 			>
 				<div className="p-6 space-y-6">
 					<div className="flex items-center justify-between">
@@ -224,11 +246,11 @@ export default function AssignmentsPage() {
 													<Input
 														type="number"
 														min="1"
-														value={formData.cutoff_days}
+														value={Number.isNaN(formData.cutoff_days) ? "" : formData.cutoff_days}
 														onChange={(e) =>
 															setFormData({
 																...formData,
-																cutoff_days: Number.parseInt(e.target.value),
+																cutoff_days: e.target.value === "" ? NaN : Number.parseInt(e.target.value),
 															})
 														}
 													/>
@@ -241,13 +263,11 @@ export default function AssignmentsPage() {
 														type="number"
 														min="0"
 														max="100"
-														value={formData.penalty_percent}
+														value={Number.isNaN(formData.penalty_percent) ? "" : formData.penalty_percent}
 														onChange={(e) =>
 															setFormData({
 																...formData,
-																penalty_percent: Number.parseInt(
-																	e.target.value
-																),
+																penalty_percent: e.target.value === "" ? NaN : Number.parseInt(e.target.value),
 															})
 														}
 													/>
@@ -315,6 +335,19 @@ export default function AssignmentsPage() {
 					</Card>
 				</div>
 			</main>
+
+			<ConfirmationModal
+				isOpen={deleteModalOpen}
+				onClose={() => {
+					setDeleteModalOpen(false);
+					setAssignmentToDelete(null);
+				}}
+				onConfirm={confirmDelete}
+				title="Delete Assignment"
+				description="Are you sure you want to delete this assignment? This action cannot be undone and all associated submissions will be lost."
+				isLoading={isDeleting}
+				variant="destructive"
+			/>
 		</div>
 	);
 }

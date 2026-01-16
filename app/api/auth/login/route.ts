@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { getUsersCollection } from "@/lib/db";
 import { isValidEmail, verifyPassword } from "@/lib/auth";
+import { logEvent } from "@/lib/logger";
 
 export async function POST(request: NextRequest) {
 	try {
@@ -57,6 +58,13 @@ export async function POST(request: NextRequest) {
 				{ status: 401 }
 			);
 		}
+
+		// Log the successful login
+		await logEvent({
+			action: `User signed in: ${user.full_name || user.email}`,
+			user: user.role,
+			level: "success",
+		});
 
 		const response = NextResponse.json({
 			userId: user._id,

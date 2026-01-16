@@ -10,8 +10,17 @@ import { useAuthStore } from "@/lib/store"
 import { useUIStore } from "@/lib/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { AlertCircle, Clock, FileUp, CheckCircle } from "lucide-react"
+import { AlertCircle, Clock, FileUp, CheckCircle, LayoutDashboard, BookOpen, Book, FileText } from "lucide-react"
+
+const studentNavigationItems = [
+  { href: "/student", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/student/courses", label: "My Courses", icon: BookOpen },
+  { href: "/student/materials", label: "Course Materials", icon: Book },
+  { href: "/student/assignments", label: "Assignments", icon: FileText },
+]
+
 import { FileUpload } from "@/components/file-upload"
+import { toast } from "sonner"
 
 interface AssignmentDetail {
   _id: string
@@ -119,9 +128,11 @@ export default function AssignmentDetailPage() {
 
       const data = await res.json()
       setSubmission(data.submission)
+      toast.success("Assignment submitted successfully")
       setUploadedFiles([])
     } catch (err) {
       console.error("Failed to submit:", err)
+      toast.error("An error occurred while submitting. Please try again.")
       setError("An error occurred while submitting. Please try again.")
     } finally {
       setSubmitting(false)
@@ -151,7 +162,7 @@ export default function AssignmentDetailPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <Sidebar />
+      <Sidebar navigationItems={studentNavigationItems} />
       <main className={`transition-all duration-200 ${sidebarOpen ? "lg:ml-64" : ""}`}>
         <div className="p-6 space-y-6">
           {loading ? (

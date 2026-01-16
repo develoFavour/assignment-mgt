@@ -11,11 +11,19 @@ import { useUIStore } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Plus, Upload, Trash2 } from "lucide-react";
+import { Plus, Upload, Trash2, LayoutDashboard, Users, BookOpen } from "lucide-react";
 import { FormError } from "@/components/form-error";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { EmptyState } from "@/components/empty-state";
+import { toast } from "sonner";
+import { ConfirmationModal } from "@/components/modals/confirmation-modal";
 import type { User } from "@/lib/types";
+
+const adminNavigationItems = [
+	{ href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+	{ href: "/admin/users", label: "Users", icon: Users },
+	{ href: "/admin/courses", label: "Courses", icon: BookOpen },
+];
 
 export default function UsersPage() {
 	const router = useRouter();
@@ -40,6 +48,9 @@ export default function UsersPage() {
 		matric_number: "",
 		level: 100,
 	});
+	const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+	const [userToDelete, setUserToDelete] = useState<string | null>(null);
+	const [isDeleting, setIsDeleting] = useState(false);
 
 	useEffect(() => {
 		if (!session) {
@@ -104,21 +115,32 @@ export default function UsersPage() {
 		}
 	};
 
-	const handleDeleteUser = async (userId: string) => {
-		if (!confirm("Are you sure you want to delete this user?")) return;
+	const handleDeleteUser = (userId: string) => {
+		setUserToDelete(userId);
+		setDeleteModalOpen(true);
+	};
 
+	const confirmDeleteUser = async () => {
+		if (!userToDelete) return;
+
+		setIsDeleting(true);
 		try {
-			const res = await fetch(`/api/admin/users/${userId}`, {
+			const res = await fetch(`/api/admin/users/${userToDelete}`, {
 				method: "DELETE",
 			});
 			if (res.ok) {
-				setUsers(users.filter((u) => u._id !== userId));
+				setUsers(users.filter((u) => u._id !== userToDelete));
+				toast.success("User deleted successfully");
 			} else {
-				setFormError("Failed to delete user");
+				toast.error("Failed to delete user");
 			}
 		} catch (err) {
 			console.error("[v0] Failed to delete user:", err);
-			setFormError("Failed to delete user");
+			toast.error("An error occurred while deleting the user");
+		} finally {
+			setIsDeleting(false);
+			setDeleteModalOpen(false);
+			setUserToDelete(null);
 		}
 	};
 
@@ -129,11 +151,10 @@ export default function UsersPage() {
 	return (
 		<div className="min-h-screen bg-background">
 			<Header />
-			<Sidebar />
+			<Sidebar navigationItems={adminNavigationItems} />
 			<main
-				className={`transition-all duration-200 ${
-					sidebarOpen ? "lg:ml-64" : ""
-				}`}
+				className={`transition-all duration-200 ${sidebarOpen ? "lg:ml-64" : ""
+					}`}
 			>
 				<div className="p-6 space-y-6">
 					<div className="flex items-center justify-between">
@@ -321,11 +342,10 @@ export default function UsersPage() {
 													</td>
 													<td className="py-3 px-4">
 														<span
-															className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-																user.isPasswordSet
-																	? "bg-green-100 text-green-700 dark:bg-green-950/20 dark:text-green-400"
-																	: "bg-yellow-100 text-yellow-700 dark:bg-yellow-950/20 dark:text-yellow-400"
-															}`}
+															className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${user.isPasswordSet
+																? "bg-green-100 text-green-700 dark:bg-green-950/20 dark:text-green-400"
+																: "bg-yellow-100 text-yellow-700 dark:bg-yellow-950/20 dark:text-yellow-400"
+																}`}
 														>
 															{user.isPasswordSet ? "Active" : "Pending"}
 														</span>
@@ -350,6 +370,19 @@ export default function UsersPage() {
 					</Card>
 				</div>
 			</main>
+
+			<ConfirmationModal
+				isOpen={deleteModalOpen}
+				onClose={() => {
+					setDeleteModalOpen(false);
+					setUserToDelete(null);
+				}}
+				onConfirm={confirmDeleteUser}
+				title="Delete User"
+				description="Are you sure you want to delete this user? This action will permanently remove them from the system and they will lost access to their dashboard."
+				isLoading={isDeleting}
+				variant="destructive"
+			/>
 		</div>
 	);
 }

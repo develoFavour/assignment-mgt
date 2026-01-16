@@ -6,7 +6,7 @@ interface AuthStore {
 	session: Session | null;
 	setSession: (session: Session | null) => void;
 	logout: () => void;
-	hydrateFromCookie: () => void;
+	checkAuth: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -18,25 +18,21 @@ export const useAuthStore = create<AuthStore>()(
 			},
 			logout: () => {
 				set({ session: null });
-				// Clear the session cookie
+				// Clear the session cookie via API or locally if non-httpOnly
 				if (typeof document !== "undefined") {
 					document.cookie = "session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
 				}
 			},
-			hydrateFromCookie: () => {
-				if (typeof document !== "undefined") {
-					const cookies = document.cookie.split("; ");
-					const sessionCookie = cookies.find((c) => c.startsWith("session="));
-					if (sessionCookie) {
-						try {
-							const sessionData = JSON.parse(
-								decodeURIComponent(sessionCookie.split("=")[1])
-							);
-							set({ session: sessionData });
-						} catch (error) {
-							console.error("Failed to parse session cookie:", error);
-						}
+			checkAuth: async () => {
+				try {
+					const res = await fetch("/api/auth/me");
+					if (res.ok) {
+						const data = await res.json();
+						set({ session: data.session });
 					}
+				} catch (error) {
+					console.error("Failed to check auth status:", error);
+					set({ session: null });
 				}
 			},
 		}),

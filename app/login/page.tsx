@@ -11,6 +11,7 @@ import { FormError } from "@/components/form-error";
 import { LoadingSpinner } from "@/components/loading-spinner";
 import { Lock, User, ArrowRight, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export default function LoginPage() {
 	const router = useRouter();
@@ -41,6 +42,7 @@ export default function LoginPage() {
 
 			setSession(data as any);
 			sessionStorage.setItem("temp_user", JSON.stringify(data));
+			toast.success("Login successful");
 
 			if (data.requiresPasswordSetup || !data.isPasswordSet) {
 				router.push("/onboarding/set-password");
@@ -58,7 +60,7 @@ export default function LoginPage() {
 			}
 		} catch (err) {
 			console.error("[Login] error:", err);
-			setError("An error occurred. Please check your connection.");
+			toast.error("An error occurred. Please check your connection.");
 		} finally {
 			setLoading(false);
 		}

@@ -11,7 +11,14 @@ import { useUIStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Plus } from "lucide-react"
+import { Plus, LayoutDashboard, Users, BookOpen } from "lucide-react"
+
+const adminNavigationItems = [
+  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/users", label: "Users", icon: Users },
+  { href: "/admin/courses", label: "Courses", icon: BookOpen },
+]
+
 import type { Course } from "@/lib/types"
 
 export default function CoursesPage() {
@@ -91,7 +98,7 @@ export default function CoursesPage() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <Sidebar />
+      <Sidebar navigationItems={adminNavigationItems} />
       <main className={`transition-all duration-200 ${sidebarOpen ? "lg:ml-64" : ""}`}>
         <div className="p-6 space-y-6">
           <div className="flex items-center justify-between">

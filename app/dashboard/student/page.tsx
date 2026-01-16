@@ -7,7 +7,15 @@ import { Sidebar } from "@/components/layout/sidebar"
 import { useAuthStore } from "@/lib/store"
 import { useUIStore } from "@/lib/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { FileText, Clock, CheckCircle } from "lucide-react"
+import { FileText, Clock, CheckCircle, LayoutDashboard, BookOpen, Book } from "lucide-react"
+
+const studentNavigationItems = [
+  { href: "/student", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/student/courses", label: "My Courses", icon: BookOpen },
+  { href: "/student/materials", label: "Course Materials", icon: Book },
+  { href: "/student/assignments", label: "Assignments", icon: FileText },
+]
+
 
 export default function StudentDashboard() {
   const router = useRouter()
@@ -57,7 +65,7 @@ export default function StudentDashboard() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <Sidebar />
+      <Sidebar navigationItems={studentNavigationItems} />
       <main className={`transition-all duration-200 ${sidebarOpen ? "lg:ml-64" : ""}`}>
         <div className="p-6 space-y-6">
           <div>

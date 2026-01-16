@@ -56,3 +56,13 @@ export async function getGradesCollection(): Promise<Collection> {
 	const { db } = await connectToDatabase();
 	return db.collection("grades");
 }
+
+export async function getMaterialsCollection(): Promise<Collection> {
+	const { db } = await connectToDatabase();
+	return db.collection("materials");
+}
+
+export async function getLogsCollection(): Promise<Collection> {
+	const { db } = await connectToDatabase();
+	return db.collection("audit_logs");
+}
