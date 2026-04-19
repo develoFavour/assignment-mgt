@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Header } from "./header";
 import { Sidebar } from "./sidebar";
 import { useUIStore, useAuthStore } from "@/lib/store";
@@ -24,12 +24,18 @@ export function DashboardLayout({ children, navigationItems }: DashboardLayoutPr
     const pathname = usePathname();
     const router = useRouter();
 
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
     // Session check and redirect (Handles production auth lag)
     useEffect(() => {
-        if (!session) {
+        if (mounted && !session) {
             router.push("/login");
         }
-    }, [session, router]);
+    }, [session, router, mounted]);
 
     // Close sidebar on navigation (mobile)
     useEffect(() => {

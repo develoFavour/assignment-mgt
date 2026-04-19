@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/store";
+import Link from "next/link";
 import {
 	Card,
 	CardContent,
@@ -173,7 +174,7 @@ export default function StudentDashboard() {
 					</CardHeader>
 					<CardContent className="p-0">
 						<div className="divide-y divide-border/50">
-							<a
+							<Link
 								href="/student/materials"
 								className="flex items-center justify-between p-6 hover:bg-muted/50 transition-all group"
 							>
@@ -191,8 +192,8 @@ export default function StudentDashboard() {
 									</div>
 								</div>
 								<ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-							</a>
-							<a
+							</Link>
+							<Link
 								href="/student/assignments"
 								className="flex items-center justify-between p-6 hover:bg-muted/50 transition-all group"
 							>
@@ -210,7 +211,7 @@ export default function StudentDashboard() {
 									</div>
 								</div>
 								<ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-							</a>
+							</Link>
 						</div>
 					</CardContent>
 				</Card>

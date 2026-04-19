@@ -3,6 +3,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/lib/store";
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -223,7 +224,7 @@ export default function AssignmentsPage() {
 				) : (
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 						{filteredAssignments.map((assignment) => (
-							<a
+							<Link
 								key={assignment._id}
 								href={`/student/assignments/${assignment._id}`}
 								className="group block"
@@ -260,7 +261,7 @@ export default function AssignmentsPage() {
 										</div>
 									</CardContent>
 								</Card>
-							</a>
+							</Link>
 						))}
 					</div>
 				)}
