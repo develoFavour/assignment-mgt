@@ -303,7 +303,7 @@ export default function LandingPage() {
 								title: "Lecturer Hub",
 								desc: "Grade assignments, provide feedback, and track progress.",
 								icon: <Users />,
-								img: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600",
+								img: "/matric.jpg",
 								link: "/lecturer",
 							},
 							{
