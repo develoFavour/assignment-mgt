@@ -11,9 +11,6 @@ import {
 	Calendar,
 	ChevronRight,
 	ShieldCheck,
-	Zap,
-	Globe,
-	Sparkles,
 	ArrowUpRight,
 	Star,
 	Play,
@@ -109,12 +106,23 @@ export default function LandingPage() {
 					)}
 				>
 					<div className="flex items-center gap-2 group cursor-pointer">
-						<div className="h-10 w-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/30 group-hover:rotate-12 transition-transform duration-500">
-							<GraduationCap className="h-6 w-6" />
+						<div className="relative h-11 w-11 overflow-hidden rounded-xl bg-white shadow-lg shadow-slate-200/60 ring-1 ring-slate-200">
+							<Image
+								src="/hallmark-logo.svg"
+								alt="Hallmark University logo"
+								fill
+								className="object-contain p-1.5"
+								priority
+							/>
 						</div>
-						<span className="text-xl font-black tracking-tighter text-slate-900 uppercase">
-							Edu<span className="text-primary">Hub</span>
-						</span>
+						<div className="leading-tight">
+							<p className="text-[11px] font-black uppercase tracking-[0.22em] text-primary">
+								Hallmark University
+							</p>
+							<span className="text-lg font-black tracking-tight text-slate-900">
+								Assignment Manager
+							</span>
+						</div>
 					</div>
 
 					<div className="hidden lg:flex items-center gap-8">
@@ -148,33 +156,34 @@ export default function LandingPage() {
 			</nav>
 
 			{/* Hero Section */}
-			<section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 px-6 overflow-hidden">
-				{/* Decorative Blobs */}
-				<div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/[0.03] rounded-full blur-3xl -mr-96 -mt-96 animate-pulse" />
-				<div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-indigo-500/[0.02] rounded-full blur-3xl -ml-96 -mb-96" />
+			<section className="relative px-6 pt-32 pb-20 lg:pt-44 lg:pb-28 overflow-hidden">
+				<div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(37,99,235,0.10),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(15,23,42,0.06),transparent_30%)]" />
 
-				<div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-10">
-					{/* Left: Content */}
-					<div className="space-y-8">
+				<div className="max-w-7xl mx-auto relative z-10">
+					<div className="overflow-hidden rounded-[36px] border border-slate-200 bg-white shadow-[0_32px_120px_-48px_rgba(15,23,42,0.45)]">
+						<div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1.05fr)_minmax(420px,0.95fr)] items-stretch">
+							{/* Left: Content */}
+							<div className="space-y-8 px-8 py-10 sm:px-12 sm:py-14 lg:px-14 lg:py-16">
 						<div className="reveal">
 							<Badge
 								variant="secondary"
 								className="bg-primary/5 text-primary border-none px-4 py-1.5 rounded-full font-black text-[11px] uppercase tracking-[0.2em] mb-4"
 							>
-								Hallmark University
+								Hallmark University, Ogun State
 							</Badge>
-							<h1 className="text-6xl lg:text-8xl font-black text-slate-900 leading-[0.95] tracking-tighter">
-								Welcome to <br />
-								<span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-indigo-600">
-									EduHub.
-								</span>
+							<h1 className="text-5xl sm:text-6xl lg:text-7xl font-black text-slate-900 leading-[0.98] tracking-tighter">
+								Your Hallmark
+								<br />
+								academic portal,
+								<br />
+								built for action.
 							</h1>
 						</div>
 
-						<p className="text-xl text-slate-500 font-medium leading-relaxed max-w-xl reveal reveal-delay-1">
-							Far beyond the traditional boundaries of grading, Hallmark
-							provides a seamless, intelligence-driven portal for academic
-							excellence.
+						<p className="text-lg sm:text-xl text-slate-500 font-medium leading-relaxed max-w-xl reveal reveal-delay-1">
+							Access coursework, grading, schedules, and faculty workflows from
+							one streamlined platform shaped around the Hallmark University
+							experience.
 						</p>
 
 						<div className="flex flex-wrap gap-4 reveal reveal-delay-2">
@@ -196,7 +205,6 @@ export default function LandingPage() {
 							</Button>
 						</div>
 
-						{/* Email Search Bar Pill */}
 						<div className="reveal reveal-delay-3">
 							<div className="max-w-md p-1.5 bg-white border-2 border-slate-100 rounded-[30px] shadow-xl shadow-slate-200/20 flex items-center group focus-within:border-primary/20 transition-all">
 								<input
@@ -225,47 +233,37 @@ export default function LandingPage() {
 									))}
 								</div>
 								<span className="text-xs font-bold text-slate-400 tracking-tight">
-									Join <span className="text-slate-900 font-black">2,400+</span>{" "}
-									academic researchers
+									Supporting <span className="text-slate-900 font-black">students, lecturers,</span>{" "}
+									and administrators
 								</span>
 							</div>
 						</div>
 					</div>
 
-					{/* Right: Collage */}
-					<div className="relative reveal reveal-delay-2">
-						<div className="grid grid-cols-2 gap-4 relative">
-							{/* Image 1 */}
-							<div className="aspect-square rounded-[60px] overflow-hidden bg-slate-100 shadow-2xl skew-y-3 hover:skew-y-0 transition-transform duration-700">
-								<img
-									src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800"
-									className="w-full h-full object-cover"
-									alt="Academic"
-								/>
+							<div className="relative min-h-[380px] lg:min-h-full reveal reveal-delay-2">
+						<Image
+							src="/hallmark_university.jpg"
+							alt="Hallmark University campus"
+							fill
+							priority
+							className="object-cover"
+							sizes="(min-width: 1024px) 42vw, 100vw"
+						/>
+						<div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/20 to-slate-950/10" />
+						<div className="absolute inset-x-0 bottom-0 p-6 sm:p-8 lg:p-10">
+							<div className="max-w-md rounded-[24px] border border-white/20 bg-white/10 p-6 text-white backdrop-blur-md">
+								<p className="text-[11px] font-black uppercase tracking-[0.24em] text-white/70">
+									Campus Life
+								</p>
+								<h2 className="mt-3 text-2xl sm:text-3xl font-black leading-tight">
+									A platform that feels rooted in the university it serves.
+								</h2>
+								<p className="mt-3 text-sm sm:text-base font-medium leading-relaxed text-white/80">
+									Bring students and staff into a familiar, official Hallmark
+									experience from the first screen.
+								</p>
 							</div>
-							{/* Image 2 */}
-							<div className="aspect-square rounded-[80px] overflow-hidden bg-slate-100 shadow-2xl -translate-y-12 -skew-y-3 hover:skew-y-0 transition-transform duration-700">
-								<img
-									src="https://images.unsplash.com/photo-1543269865-cbf427effbad?w=800"
-									className="w-full h-full object-cover"
-									alt="Academic"
-								/>
-							</div>
-							{/* Image 3 */}
-							<div className="aspect-square rounded-[100px] overflow-hidden bg-slate-100 shadow-2xl translate-x-0 hover:translate-x-12 transition-transform duration-700">
-								<img
-									src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800"
-									className="w-full h-full object-cover"
-									alt="Academic"
-								/>
-							</div>
-							{/* Image 4 */}
-							<div className="aspect-square rounded-[60px] overflow-hidden bg-slate-100 shadow-2xl -translate-y-8 translate-x-4 skew-x-3 hover:skew-x-0 transition-transform duration-700">
-								<img
-									src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=800"
-									className="w-full h-full object-cover"
-									alt="Academic"
-								/>
+						</div>
 							</div>
 						</div>
 					</div>
@@ -333,9 +331,10 @@ export default function LandingPage() {
 				<div className="max-w-5xl mx-auto text-center space-y-12">
 					<div className="reveal">
 						<h2 className="text-4xl lg:text-7xl font-black text-slate-900 leading-[1.1] tracking-tighter italic">
-							"Education is not{" "}
+							&ldquo;Education is not{" "}
 							<span className="text-primary">preparation</span> for life; <br />
-							Education is <span className="text-slate-400">life itself.</span>"
+							Education is <span className="text-slate-400">life itself.</span>
+							&rdquo;
 						</h2>
 					</div>
 					<div className="h-2 w-24 bg-primary/20 mx-auto rounded-full reveal reveal-delay-1" />
@@ -429,17 +428,26 @@ export default function LandingPage() {
 				<div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
 					<div className="col-span-2 space-y-8">
 						<div className="flex items-center gap-2 group cursor-pointer">
-							<div className="h-10 w-10 bg-primary rounded-xl flex items-center justify-center text-white shadow-lg transition-transform md:group-hover:rotate-12">
-								<GraduationCap className="h-6 w-6" />
+							<div className="relative h-10 w-10 overflow-hidden rounded-xl bg-white shadow-lg shadow-slate-200/60 ring-1 ring-slate-200">
+								<Image
+									src="/hallmark-logo.svg"
+									alt="Hallmark University logo"
+									fill
+									className="object-contain p-1.5"
+								/>
 							</div>
-							<span className="text-2xl font-black tracking-tighter text-slate-900 uppercase">
-								Edu<span className="text-primary">Hub</span>
-							</span>
+							<div className="leading-tight">
+								<p className="text-[11px] font-black uppercase tracking-[0.22em] text-primary">
+									Hallmark University
+								</p>
+								<span className="text-2xl font-black tracking-tight text-slate-900">
+									Assignment Manager
+								</span>
+							</div>
 						</div>
 						<p className="text-slate-400 font-medium max-w-sm leading-relaxed">
-							Empowering the next generation of researchers with intelligent
-							tools for academic management and collaborative learning
-							environments.
+							Supporting academic operations with a clear, university-branded
+							workspace for learning, grading, and administration.
 						</p>
 					</div>
 
